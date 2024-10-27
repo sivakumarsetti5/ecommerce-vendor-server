@@ -3,20 +3,35 @@ var { gql } = require('apollo-server-express')
 // Define the schema using SDL
 
 var typeDefs = gql`
-   type Student{
-     rno:Int
-     name:String
-     marks:Int
+   scalar JSON
+   
+   input userInput{
+      uid:String
+      pwd:String
    }
 
+   input ProductInput{
+      name:String
+      category:String
+      cost:Int
+      description:String
+   }
+
+   type Product{
+      name:String
+      category:String
+      cost:Int
+      description:String
+    }
+
    type Query {
-     getStudentName:String                     
-     getPlayers:[String]
-     getStudents:[Student]
+     getProducts:[Product]
+     handleLogin(userLoginData:userInput):JSON
    }
 
    type Mutation{
-     saveStudent(name:String,rno:Int):Int
+     saveProduct(productInput:ProductInput):JSON
+     changePassword(id:String,newPwd:String,pwd:String):JSON
    }
 `
 
