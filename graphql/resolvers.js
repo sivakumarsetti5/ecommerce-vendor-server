@@ -1,7 +1,10 @@
 const { ObjectId } = require("mongodb")
 const getDb = require("../common/dbConnection")
+const {GraphQLUpload} = require('graphql-upload')
+const fs = require('fs')
 
 var resolvers = {
+    Upload:GraphQLUpload,
     Query:{
         getProducts:async function(){
             try{
@@ -47,9 +50,20 @@ var resolvers = {
         },
         saveProduct:async function(a,payload){
             try{
-                var db= await getDb()
-                var collection = db.collection('products')
-                var result = collection.insertOne(payload.productInput)
+                const{file,productInput} = payload
+                const { createReadStream, filename} = await file;
+                // Specify the path where you want to save the uploaded file
+                const stream = createReadStream();
+                const uploadFilename = Date.now() + '_' + filename
+                const out = fs.createWriteStream(`./uploads/${uploadFilename}`);
+                stream.pipe(out);
+                const inputData = {
+                    ...productInput,
+                    filePath : `uploads/${uploadFilename}`
+                }
+                const db = await getDb()
+                const collection = db.collection('products')
+                const result = await collection.insertOne(inputData)
                 return result
             }catch(ex){
                 console.error('save products error',ex)

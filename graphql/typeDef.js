@@ -4,6 +4,7 @@ var { gql } = require('apollo-server-express')
 
 var typeDefs = gql`
    scalar JSON
+   scalar Upload
    
    input userInput{
       uid:String
@@ -22,6 +23,7 @@ var typeDefs = gql`
       category:String
       cost:Int
       description:String
+      filePath:String
     }
 
    type Query {
@@ -30,7 +32,7 @@ var typeDefs = gql`
    }
 
    type Mutation{
-     saveProduct(productInput:ProductInput):JSON
+     saveProduct(file:Upload,productInput:ProductInput):JSON
      changePassword(id:String,newPwd:String,pwd:String):JSON
    }
 `

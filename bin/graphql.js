@@ -1,11 +1,16 @@
 var express = require('express')
-
 var { ApolloServer } = require('apollo-server-express')
 
 var typeDefs = require('../graphql/typeDef')
 var resolvers = require('../graphql/resolvers')
-var app = express();
+var {graphqlUploadExpress} = require("graphql-upload")
+var cors = require('cors')
+
+
 async function startServer() {
+    var app = express();
+    app.use(cors())
+    app.use(graphqlUploadExpress())
     // Create Apollo server instance
     var server = new ApolloServer({ typeDefs, resolvers })  
 
