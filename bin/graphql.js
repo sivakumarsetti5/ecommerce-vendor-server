@@ -9,6 +9,7 @@ var cors = require('cors')
 
 async function startServer() {
     var app = express();
+    app.use("/uploads", express.static("uploads"));
     app.use(cors())
     app.use(graphqlUploadExpress())
     // Create Apollo server instance

@@ -19,11 +19,16 @@ var typeDefs = gql`
    }
 
    type Product{
+      _id:String
       name:String
       category:String
       cost:Int
       description:String
       filePath:String
+    }
+    input deleteProductInput{
+     id:String
+     path:String
     }
 
    type Query {
@@ -34,6 +39,7 @@ var typeDefs = gql`
    type Mutation{
      saveProduct(file:Upload,productInput:ProductInput):JSON
      changePassword(id:String,newPwd:String,pwd:String):JSON
+     deleteProduct(data:deleteProductInput):JSON
    }
 `
 
