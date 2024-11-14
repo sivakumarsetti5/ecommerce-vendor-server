@@ -51,6 +51,7 @@ var resolvers = {
         saveProduct:async function(a,payload){
             try{
                 const{file,productInput} = payload
+                console.log(file)
                 const { createReadStream, filename} = await file;
                 // Specify the path where you want to save the uploaded file
                 const stream = createReadStream();

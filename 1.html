@@ -1,0 +1,22 @@
+<button id="btn1" onclick="fn1()">1</button>
+<button id="btn2" onclick="fn2()">1</button>
+
+<script>
+    function fnBtn1(){
+        let val1 = 1
+        return function(){
+            val1++
+            document.querySelector('#btn1').innerText = val1
+        }
+    }
+    const fn1 = fnBtn1()
+
+    function fnBtn2(){
+        let val2 = 1
+        return function(){
+            val2++
+            document.querySelector('#btn2').innerText = val2
+        }
+    }
+    const fn2 = fnBtn2()
+</script>
