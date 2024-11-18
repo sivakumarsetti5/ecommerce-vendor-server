@@ -6,11 +6,12 @@ const fs = require('fs')
 var resolvers = {
     Upload:GraphQLUpload,
     Query:{
-        getProducts:async function(){
+        getProducts:async function(a,payload){
+            console.log(payload)
             try{
                 var db = await getDb()
                 var collection = db.collection('products')
-                var result = collection.find({}).toArray()
+                var result = collection.find({vendorId:payload.vendorId}).toArray()
                 return result
             }catch(ex){
                 console.error('getProduct Error',ex)
@@ -68,6 +69,27 @@ var resolvers = {
                 return result
             }catch(ex){
                 console.error('save products error',ex)
+                return ex.message
+            }
+        },
+        updateProduct:async function(a,payload){
+            try{
+                const{file,productInput} = payload
+                const{id,name,cost,category,description,filePath} = productInput
+                const _id = ObjectId.createFromHexString(id)
+                const { createReadStream, filename} = await file;
+                // Specify the path where you want to save the uploaded file
+                const stream = createReadStream();
+                const uploadFilename = filePath.split('/')[1]
+                const out = fs.createWriteStream(`./uploads/${uploadFilename}`);
+                stream.pipe(out);
+                const inputData = {name,cost,description,category}
+                const db = await getDb()
+                const collection = db.collection('products')
+                const result = await collection.updateOne({_id},{$set:inputData})
+                return result
+            }catch(ex){
+                console.error('update products error',ex)
                 return ex.message
             }
         },
