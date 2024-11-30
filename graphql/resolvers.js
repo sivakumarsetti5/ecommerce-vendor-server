@@ -52,7 +52,7 @@ var resolvers = {
         saveProduct:async function(a,payload){
             try{
                 const{file,productInput} = payload
-                console.log(file)
+                //console.log(file)
                 const { createReadStream, filename} = await file;
                 // Specify the path where you want to save the uploaded file
                 const stream = createReadStream();
@@ -73,24 +73,31 @@ var resolvers = {
             }
         },
         updateProduct:async function(a,payload){
-            try{
-                const{file,productInput} = payload
-                const{id,name,cost,category,description,filePath} = productInput
+            try {
+                const { file, productInput } = payload
+                const { id, name, cost, category, description, filePath } = productInput
+                let isImageModified = false
+                if (file) {
+                    const { createReadStream } = await file;
+                    // Specify the path where you want to save the uploaded file
+                    const uploadFileName = filePath?.split('/')[1]
+                    const stream = createReadStream();
+                    const out = fs.createWriteStream(`./uploads/${uploadFileName}`);
+                    stream.pipe(out);
+                    isImageModified = true
+                }
+                var db = await getDb()
+                var collection = db.collection("products")
                 const _id = ObjectId.createFromHexString(id)
-                const { createReadStream, filename} = await file;
-                // Specify the path where you want to save the uploaded file
-                const stream = createReadStream();
-                const uploadFilename = filePath.split('/')[1]
-                const out = fs.createWriteStream(`./uploads/${uploadFilename}`);
-                stream.pipe(out);
-                const inputData = {name,cost,description,category}
-                const db = await getDb()
-                const collection = db.collection('products')
-                const result = await collection.updateOne({_id},{$set:inputData})
-                return result
-            }catch(ex){
-                console.error('update products error',ex)
-                return ex.message
+                const inputData = {
+                    name, cost, category, description
+
+                }
+                var result = await collection.updateOne({ _id }, { $set: inputData })
+                result.isImageModified = isImageModified
+                return result;
+            } catch (ex) {
+                return { message: ex.message }
             }
         },
         deleteProduct:async function(a,payload,c,d){
