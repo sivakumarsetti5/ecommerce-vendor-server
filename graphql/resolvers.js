@@ -7,7 +7,7 @@ var resolvers = {
     Upload:GraphQLUpload,
     Query:{
         getProducts:async function(a,payload){
-            console.log(payload)
+            // console.log(payload)
             try{
                 var db = await getDb()
                 var collection = db.collection('products')
@@ -112,7 +112,7 @@ var resolvers = {
                 })
                 return res
             }catch(ex){
-                console.log(ex.message)
+                //console.log(ex.message)
                 return {message:ex.message}
             }
         }
